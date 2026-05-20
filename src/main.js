@@ -10,6 +10,10 @@ const sizes = {
   height: window.innerHeight
 }
 
+//fans array to animate
+const xAxisFans = [];
+const yAxisFans = [];
+
 //Loaders
 const textureLoader = new THREE.TextureLoader();
 
@@ -130,6 +134,15 @@ loader.load("/models/room_portfolio.glb", (glb)=> {
 
           child.material = material;
 
+          if (child.name.includes("Fan")) {
+            if (child.name.includes("Fan_3") || child.name.includes("Fan_4")) 
+              {
+                xAxisFans.push(child);
+              } else {
+                yAxisFans.push(child);
+              }
+          }
+
           if (child.material.map) {
             child.material.map.minFilter = THREE.LinearFilter;
           }
@@ -197,6 +210,15 @@ const render = () => {
   // console.log(camera.position);
   // console.log("000000000");
   // console.log(controls.target);
+
+  //Animating fans
+  xAxisFans.forEach((fan) => {
+    fan.rotation.x += 0.01;
+  });
+
+  yAxisFans.forEach((fan) => {
+    fan.rotation.y += 0.01;
+  });
     
   cube.rotation.x += 0.01;
   cube.rotation.y += 0.01;
