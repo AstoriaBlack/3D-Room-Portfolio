@@ -105,7 +105,7 @@ loader.load("/models/room_portfolio.glb", (glb)=> {
     if (child.isMesh) {
       if (child.name.includes("Water")) {
           child.material = new THREE.MeshBasicMaterial({
-            color:0xC8EAFF,
+            color:0x83BDF7,
             transparent: true,
             opacity: 0.5,
             depthWrite: false,
