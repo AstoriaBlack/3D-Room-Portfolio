@@ -105,14 +105,14 @@ loader.load("/models/room_portfolio.glb", (glb)=> {
     if (child.isMesh) {
       if (child.name.includes("Water")) {
           child.material = new THREE.MeshBasicMaterial({
-            color:0x558BC6,
+            color:0xC8EAFF,
             transparent: true,
             opacity: 0.5,
             depthWrite: false,
           })
         }else if (child.name.includes("Glass")) {
           child.material = glassMaterial;
-          
+
         }else if (child.name.includes("Bubble")) {
         child.material = whiteMaterial;
         
