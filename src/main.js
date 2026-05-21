@@ -14,6 +14,18 @@ const sizes = {
 const xAxisFans = [];
 const yAxisFans = [];
 
+const raycasterObjects = [];
+let currentIntersects = [];
+
+const socialLinks = {
+  "Github" : "https://github.com/AstoriaBlack",
+  "LinkedIn" : "https://www.linkedin.com",
+  "Contact" : "+94787719972"
+}
+
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+
 //Loaders
 const textureLoader = new THREE.TextureLoader();
 
@@ -104,9 +116,18 @@ videoElement.play();
 const videoTexture = new THREE.VideoTexture(videoElement);
 videoTexture.flipY = false;
 
+window.addEventListener("mousemove", (e) => {
+  pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
+  pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
+});
+
 loader.load("/models/room_portfolio.glb", (glb)=> {
   glb.scene.traverse((child) => {
     if (child.isMesh) {
+
+      if (child.name.includes("Raycaster")) {
+        raycasterObjects.push(child);
+      }
       if (child.name.includes("Water")) {
           child.material = new THREE.MeshBasicMaterial({
             color:0x83BDF7,
@@ -171,12 +192,6 @@ const renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: true});
 renderer.setSize( window.innerWidth, window.innerHeight );
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-
-const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-const cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
-
 const controls = new OrbitControls( camera, renderer.domElement );
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
@@ -219,9 +234,29 @@ const render = () => {
   yAxisFans.forEach((fan) => {
     fan.rotation.y += 0.01;
   });
+
+  //Raycaster
+  raycaster.setFromCamera(pointer, camera);
+
+  // Get all the objects the raycaster is currently shooting through / intersecting with
+  currentIntersects = raycaster.intersectObjects(raycasterObjects);
+
+  for (let i =0; i < currentIntersects.length; i++) {
     
-  cube.rotation.x += 0.01;
-  cube.rotation.y += 0.01;
+  }
+
+  if(currentIntersects.length > 0) {
+    const currentIntersectObject = currentIntersects[0].object;
+
+    if (currentIntersectObject.name.includes("Pointer")) {
+        document.body.style.cursor = "pointer";
+    } else {
+        document.body.style.cursor = "default";
+    }
+  } else {
+        document.body.style.cursor = "default";
+  }
+    
 
   renderer.render( scene, camera );
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
