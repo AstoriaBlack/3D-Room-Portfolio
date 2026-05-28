@@ -12,25 +12,32 @@ const sizes = {
 }
 
 const modals = {
-  about: document.querySelector("model.about"),
-  work: document.querySelector("model.work"),
-  contact: document.querySelector("model.contact")
+  about: document.querySelector(".modal.about"),
+  work: document.querySelector(".modal.work"),
+  contact: document.querySelector(".modal.contact")
 }
+
+document.querySelectorAll(".model-exit-button").forEach((button) => {
+  button.addEventListener("click", (e) => {
+    const modal = e.target.closest(".modal");
+    hideModel(modal);
+  });
+});
 
 //models transitions
 const showModel = (modal) => {
   modal.style.display = "block";
 
-  gsap.set(modelDirection, { opacity: 0});
+  gsap.set(modal, { opacity: 0});
 
-  gsap.to(modelDirection, {
+  gsap.to(modal, {
     opacity: 1,
     duration: 0.5
   });
 }
 
 const hideModel = (modal) => {
-  gsap.to(modelDirection, {
+  gsap.to(modal, {
     opacity: 0,
     duration: 0.5,
     onComplete: ()=> {
@@ -49,7 +56,7 @@ let currentIntersects = [];
 const socialLinks = {
   "Github" : "https://github.com/AstoriaBlack",
   "Linkedin" : "https://www.linkedin.com",
-  "Contact" : "+94787719972"
+  "Phone" : "+94787719972"
 }
 
 const raycaster = new THREE.Raycaster();
@@ -162,14 +169,15 @@ window.addEventListener("click", (e) => {
   if (currentIntersects.length > 0) {
     const object = currentIntersects[0].object;
 
+    // Check social links first and return early if matched
+    let socialMatched = false;
     Object.entries(socialLinks).forEach(([key, url]) => {
       if (object.name.includes(key)) {
-        if (key === "Contact") {
+        socialMatched = true;
+        if (key === "Phone") {
           const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
           if (isMobile) {
             window.location.href = `tel:${url}`;
-            return;
           } else {
             navigator.clipboard.writeText(url).then(() => {
               showCopyFeedback();
@@ -184,6 +192,17 @@ window.addEventListener("click", (e) => {
         }
       }
     });
+
+    if (socialMatched) return; // ← stop here, don't fall into plaque logic
+
+    // Plaque clicks - use modals (plural)
+    if (object.name.includes("Plaque_About")) {
+      showModel(modals.about);
+    } else if (object.name.includes("Plaque_Projects")) {
+      showModel(modals.work);
+    } else if (object.name.includes("Plaque_Contact")) {
+      showModel(modals.contact);
+    }
   }
 });
 
