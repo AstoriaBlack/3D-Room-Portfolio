@@ -28,3 +28,30 @@
     height: 100%;
   }
 }
+
+//Contact
+.copy-toast {
+  position: fixed;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #546550;
+  color: white;
+  padding: 20px 40px;
+  border-radius: 20px;
+  display: none;
+  z-index: 999;
+  font-size:xx-large;
+  transition: opacity 0.3s ease-in-out;
+}
+
+//Models
+.model {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 42px;
+  z-index: 9999;
+  display: none;
+}

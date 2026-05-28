@@ -3,11 +3,40 @@ import './style.scss'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import gsap from 'gsap';
 
 const canvas = document.querySelector('#experience-canvas');
 const sizes = {
   width: window.innerWidth,
   height: window.innerHeight
+}
+
+const modals = {
+  about: document.querySelector("model.about"),
+  work: document.querySelector("model.work"),
+  contact: document.querySelector("model.contact")
+}
+
+//models transitions
+const showModel = (modal) => {
+  modal.style.display = "block";
+
+  gsap.set(modelDirection, { opacity: 0});
+
+  gsap.to(modelDirection, {
+    opacity: 1,
+    duration: 0.5
+  });
+}
+
+const hideModel = (modal) => {
+  gsap.to(modelDirection, {
+    opacity: 0,
+    duration: 0.5,
+    onComplete: ()=> {
+      modal.style.display = "none";
+    },
+  });
 }
 
 //fans array to animate
@@ -19,7 +48,7 @@ let currentIntersects = [];
 
 const socialLinks = {
   "Github" : "https://github.com/AstoriaBlack",
-  "LinkedIn" : "https://www.linkedin.com",
+  "Linkedin" : "https://www.linkedin.com",
   "Contact" : "+94787719972"
 }
 
@@ -116,9 +145,46 @@ videoElement.play();
 const videoTexture = new THREE.VideoTexture(videoElement);
 videoTexture.flipY = false;
 
+function showCopyFeedback() {
+  const toast = document.querySelector('.copy-toast');
+  toast.style.display = 'block';
+  setTimeout(() => {
+    toast.style.display = 'none';
+  }, 2000);
+}
+
 window.addEventListener("mousemove", (e) => {
   pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
   pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
+});
+
+window.addEventListener("click", (e) => {
+  if (currentIntersects.length > 0) {
+    const object = currentIntersects[0].object;
+
+    Object.entries(socialLinks).forEach(([key, url]) => {
+      if (object.name.includes(key)) {
+        if (key === "Contact") {
+          const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+          if (isMobile) {
+            window.location.href = `tel:${url}`;
+            return;
+          } else {
+            navigator.clipboard.writeText(url).then(() => {
+              showCopyFeedback();
+            });
+          }
+        } else {
+          const newWindow = window.open();
+          newWindow.opener = null;
+          newWindow.location = url;
+          newWindow.target = "_blank";
+          newWindow.rel = "noopener noreferrer";
+        }
+      }
+    });
+  }
 });
 
 loader.load("/models/room_portfolio.glb", (glb)=> {
