@@ -1,3 +1,7 @@
+@use "./styles/fonts.scss";
+@use "./styles/reset.scss";
+@use "./styles/variable.scss" as vars;
+
 * {
   margin: 0;
   padding: 0;
@@ -26,6 +30,7 @@
   #experience-canvas {
     width: 100%;
     height: 100%;
+    z-index: 2;
   }
 }
 
@@ -35,14 +40,14 @@
   top: 40px;
   left: 50%;
   transform: translateX(-50%);
-  background: #546550;
+  background: vars.$dark-green;
   color: white;
   padding: 20px 40px;
   border-radius: 20px;
   display: none;
   z-index: 999;
   font-size:xx-large;
-  transition: opacity 0.3s ease-in-out;
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 //Models
@@ -50,10 +55,12 @@
   position: absolute;
   top: 50%;
   left: 50%;
+  max-width: 700px;
+  width: 100%;
   transform: translate(-50%, -50%);
   font-size: 42px;
   z-index: 9999;
   display: none;
-  background-color: black;
+  background-color: vars.$base-light-green;
   
 }
